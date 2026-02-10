@@ -49,8 +49,7 @@ plugins:
     - mkdocstrings:
         handlers:
             python:
-                import:
-                    - https://docs.python.org/3.11/objects.inv
+                paths: [.]
                 options:
                     docstring_style: google
 
