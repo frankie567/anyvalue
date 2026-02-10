@@ -16,6 +16,74 @@
 
 ---
 
+## QuickStart
+
+A smarter alternative to `unittest.mock.ANY` that allows type checking and validation constraints.
+
+### Installation
+
+```bash
+pip install anyvalue
+```
+
+### Basic Usage
+
+```python
+from anyvalue import AnyValue
+from annotated_types import Ge, Le, Len, Predicate
+from datetime import datetime
+from unittest.mock import Mock
+
+# Basic type matching
+assert 42 == AnyValue(int)
+assert "hello" == AnyValue(str)
+assert datetime.now() == AnyValue(datetime)
+
+# Multiple types with union operator
+assert 42 == AnyValue(int | float)
+assert "test" == AnyValue(str | bytes)
+
+# None support
+assert None == AnyValue(None)
+assert None == AnyValue(str | None)
+assert 42 == AnyValue(int | None)
+
+# Validation constraints
+assert 42 == AnyValue(int, Ge(0))  # Non-negative integer
+assert "hello" == AnyValue(str, Len(5, 5))  # String of length 5
+assert 99 == AnyValue(int, Ge(0), Le(100))  # Integer between 0 and 100
+
+# Predicate validators
+is_even = Predicate(lambda x: x % 2 == 0)
+assert 42 == AnyValue(int, is_even)
+
+# Custom callable validators
+def is_palindrome(s: str) -> bool:
+    return s == s[::-1]
+
+assert "racecar" == AnyValue(str, is_palindrome)
+
+# Integration with unittest.mock
+mock_func = Mock()
+mock_func(42, "test", datetime.now())
+
+# Verify calls with flexible matching
+mock_func.assert_called_once_with(
+    AnyValue(int, Ge(0)),
+    AnyValue(str, Len(4, 10)),
+    AnyValue(datetime)
+)
+```
+
+### Key Features
+
+- **Type checking**: Accept specific types or union of types
+- **None support**: Explicitly allow or disallow None values
+- **Validation constraints**: Use `annotated-types` for advanced validation (length, ranges, patterns, etc.)
+- **Mock integration**: Works seamlessly with `unittest.mock` for validating call arguments
+
+---
+
 ## Development
 
 ### Setup environment

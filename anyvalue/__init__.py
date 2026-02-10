@@ -1,6 +1,10 @@
 """A better ANY helper for Python testing"""
 
+from anyvalue.any_value import AnyValue
+
 __version__ = "0.0.0"
+
+__all__ = ["AnyValue"]
 
 
 def add(a: int, b: int) -> int:

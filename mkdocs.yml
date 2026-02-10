@@ -59,5 +59,6 @@ watch:
 
 nav:
     - About: index.md
+    - Guide: guide.md
     - Reference:
         - anyvalue: reference/anyvalue.md
