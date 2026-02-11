@@ -9,7 +9,7 @@ jobs:
             contents: read
         strategy:
             matrix:
-                python_version: ['3.11']
+                python_version: ["3.11", "3.12", "3.13", "3.14", "3.14t"]
 
         steps:
             - uses: actions/checkout@v5
@@ -51,13 +51,13 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v6
               with:
-                  python-version: '3.11'
+                  python-version: "3.11"
             - name: Setup Just
               uses: extractions/setup-just@v3
             - name: Install uv and set the Python version
               uses: astral-sh/setup-uv@v7
               with:
-                  python-version: '3.11'
+                  python-version: "3.11"
             - name: Install the project
               run: uv sync --all-extras --dev
             - name: Build and publish on PyPI
