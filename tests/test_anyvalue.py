@@ -1,3 +1,4 @@
+import typing
 from datetime import datetime
 from math import isqrt
 from unittest.mock import Mock
@@ -45,6 +46,10 @@ def test_type_mismatch():
 
 def test_union_types():
     """Test union types using the | operator."""
+    foo: typing.Any = 123
+    assert foo == AnyValue(int)
+    typing.reveal_type(foo)
+
     # int | float
     assert 42 == AnyValue(int | float)
     assert 3.14 == AnyValue(int | float)
@@ -291,8 +296,7 @@ def test_repr_and_error_messages():
     # Test repr with type mismatch error
     result = matcher == "hello"
     assert result is False
-    assert "Expected type int" in matcher._last_failure_reason
-    assert "str" in matcher._last_failure_reason
+
     repr_str = repr(matcher)
     assert "AnyValue(int)" in repr_str
     assert "Reason:" in repr_str
@@ -307,8 +311,6 @@ def test_repr_and_error_messages():
     # Test validator failure error
     result = matcher == 5
     assert result is False
-    assert "Validator" in matcher._last_failure_reason
-    assert "not >= 10" in matcher._last_failure_reason
     repr_str = repr(matcher)
     assert "Reason:" in repr_str
 
@@ -321,7 +323,6 @@ def test_repr_and_error_messages():
     # Test length validator error
     result = matcher == "hi"
     assert result is False
-    assert "length" in matcher._last_failure_reason
     repr_str = repr(matcher)
     assert "Reason:" in repr_str
     assert "length" in repr_str

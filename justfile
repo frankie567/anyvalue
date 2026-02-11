@@ -11,7 +11,7 @@ lint:
 lint-check:
     uv run ruff format --check .
     uv run ruff check .
-    uv run mypy anyvalue/
+    uv run mypy anyvalue/ tests/
 
 test:
     uv run pytest
@@ -26,4 +26,4 @@ docs-build:
     uv run mkdocs build
 
 version bump:
-    uvx hatch version {{bump}}
+    uvx hatch version {{ bump }}
