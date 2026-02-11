@@ -139,6 +139,7 @@ assert 42 == AnyValue(int, Ge(0), is_even)
 Use any callable function as a validator:
 
 ```python
+from math import isqrt
 from anyvalue import AnyValue
 
 # Palindrome checker
@@ -153,7 +154,7 @@ assert not ("hello" == AnyValue(str, is_palindrome))
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
-    from math import isqrt
+
     for i in range(2, isqrt(n) + 1):
         if n % i == 0:
             return False

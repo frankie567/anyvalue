@@ -1,4 +1,4 @@
-site_name: anyvalue
+site_name: AnyValue
 site_description: A better ANY helper for Python testing
 
 repo_url: https://github.com/frankie567/anyvalue
@@ -12,8 +12,8 @@ theme:
         # Palette toggle for automatic mode
         - media: "(prefers-color-scheme)"
           toggle:
-            icon: material/brightness-auto
-            name: Switch to light mode
+              icon: material/brightness-auto
+              name: Switch to light mode
 
         # Palette toggle for light mode
         - media: "(prefers-color-scheme: light)"
@@ -21,8 +21,8 @@ theme:
           primary: blue
           accent: blue
           toggle:
-            icon: material/brightness-7
-            name: Switch to dark mode
+              icon: material/brightness-7
+              name: Switch to dark mode
 
         # Palette toggle for dark mode
         - media: "(prefers-color-scheme: dark)"
@@ -30,16 +30,16 @@ theme:
           primary: blue
           accent: blue
           toggle:
-            icon: material/brightness-4
-            name: Switch to light mode
+              icon: material/brightness-4
+              name: Switch to light mode
 
 markdown_extensions:
     - toc:
-        permalink: true
+          permalink: true
     - pymdownx.highlight:
-        anchor_linenums: true
+          anchor_linenums: true
     - pymdownx.tasklist:
-        custom_checkbox: true
+          custom_checkbox: true
     - pymdownx.inlinehilite
     - pymdownx.snippets
     - pymdownx.superfences
@@ -47,11 +47,12 @@ markdown_extensions:
 plugins:
     - search
     - mkdocstrings:
-        handlers:
-            python:
-                paths: [.]
-                options:
-                    docstring_style: google
+          handlers:
+              python:
+                  inventories:
+                      - https://docs.python.org/3.11/objects.inv
+                  options:
+                      docstring_style: google
 
 watch:
     - docs
@@ -61,4 +62,4 @@ nav:
     - About: index.md
     - Guide: guide.md
     - Reference:
-        - anyvalue: reference/anyvalue.md
+          - anyvalue: reference/anyvalue.md

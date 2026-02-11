@@ -1,4 +1,4 @@
-# anyvalue
+# AnyValue
 
 <p align="center">
     <em>A better ANY helper for Python testing</em>
@@ -24,6 +24,10 @@ A smarter alternative to `unittest.mock.ANY` that allows type checking and valid
 
 ```bash
 pip install anyvalue
+```
+
+```bash
+uv add anyvalue
 ```
 
 ### Basic Usage

@@ -1,16 +1,10 @@
-#!/usr/bin/env python3
-"""
-Tests for the AnyValue helper.
-
-This module contains comprehensive tests demonstrating all features of AnyValue.
-"""
-
 from datetime import datetime
+from math import isqrt
 from unittest.mock import Mock
 
 from annotated_types import Ge, Le, Len, Predicate
 
-from anyvalue.any_value import AnyValue
+from anyvalue import AnyValue
 
 
 def test_basic_type_matching():
@@ -187,7 +181,6 @@ def test_callable_validator():
     def is_prime(n: int) -> bool:
         if n < 2:
             return False
-        from math import isqrt
 
         for i in range(2, isqrt(n) + 1):
             if n % i == 0:

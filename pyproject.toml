@@ -2,7 +2,7 @@
 [project]
 name = "anyvalue"
 authors = [
-  { name = "anyvalue", email = "fvoron@gmail.com" }
+  { name = "anyvalue", email = "hello@fvoron.com" }
 ]
 description = "A better ANY helper for Python testing"
 readme = "README.md"
@@ -37,7 +37,7 @@ dev = [
     "pytest-cov",
     "mkdocs-material",
     "mkdocstrings[python]",
-    
+
 ]
 
 [tool.ruff]
