@@ -1,4 +1,3 @@
-import typing
 from datetime import datetime
 from math import isqrt
 from unittest.mock import Mock
@@ -46,10 +45,6 @@ def test_type_mismatch():
 
 def test_union_types():
     """Test union types using the | operator."""
-    foo: typing.Any = 123
-    assert foo == AnyValue(int)
-    typing.reveal_type(foo)
-
     # int | float
     assert 42 == AnyValue(int | float)
     assert 3.14 == AnyValue(int | float)

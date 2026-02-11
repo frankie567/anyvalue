@@ -1,14 +1,16 @@
 """A better ANY helper for Python testing"""
 
 import types
-from typing import Any, get_args, get_origin
+import typing
 
 from annotated_types import Ge, Gt, Le, Len, Lt, MultipleOf, Predicate
 
 __version__ = "0.0.0"
 
+T = typing.TypeVar("T")
 
-class AnyValue:
+
+class AnyValue(typing.Generic[T]):
     """
     A matcher that accepts values matching specific type and validation constraints.
 
@@ -27,7 +29,7 @@ class AnyValue:
         *validators: Optional annotated-types validators (Ge, Le, Len, etc.)
     """
 
-    def __init__(self, type_constraint: Any, *validators: Any) -> None:
+    def __init__(self, type_constraint: T, *validators: typing.Any) -> None:
         """
         Initialize the AnyValue matcher.
 
@@ -45,7 +47,9 @@ class AnyValue:
         # Parse the type constraint to extract accepted types
         self._accepted_types = self._parse_type_constraint(type_constraint)
 
-    def _parse_type_constraint(self, type_constraint: Any) -> tuple[type | None, ...]:
+    def _parse_type_constraint(
+        self, type_constraint: typing.Any
+    ) -> tuple[type | None, ...]:
         """
         Parse the type constraint into a tuple of accepted types.
 
@@ -60,10 +64,10 @@ class AnyValue:
             return (None,)
 
         # Handle union types (Python 3.10+ syntax: int | str)
-        origin = get_origin(type_constraint)
+        origin = typing.get_origin(type_constraint)
         if origin is types.UnionType:
             # Extract types from union
-            args = get_args(type_constraint)
+            args = typing.get_args(type_constraint)
             return tuple(None if arg is type(None) else arg for arg in args)
 
         # Handle single type
@@ -84,7 +88,7 @@ class AnyValue:
                 type_names.append(getattr(t, "__name__", str(t)))
         return " | ".join(type_names)
 
-    def _check_type(self, other: Any) -> tuple[bool, str | None]:
+    def _check_type(self, other: typing.Any) -> tuple[bool, str | None]:
         """
         Check if the value matches the type constraint.
 
@@ -112,7 +116,7 @@ class AnyValue:
         expected = self._format_type_constraint()
         return (False, f"Expected type {expected}, got {actual_type} ({other!r})")
 
-    def _check_validators(self, other: Any) -> tuple[bool, str | None]:
+    def _check_validators(self, other: typing.Any) -> tuple[bool, str | None]:
         """
         Check if the value passes all validators.
 
@@ -208,7 +212,7 @@ class AnyValue:
 
         return (True, None)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: typing.Any) -> typing.TypeGuard[T]:
         """
         Compare the AnyValue matcher with another value.
 
@@ -236,7 +240,7 @@ class AnyValue:
         self._last_failure_reason = None
         return True
 
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: typing.Any) -> bool:
         """
         Check inequality. This enables better pytest assertion messages.
 
