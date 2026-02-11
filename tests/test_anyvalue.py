@@ -33,14 +33,14 @@ def test_basic_type_matching():
 def test_type_mismatch():
     """Test that type mismatches are correctly rejected."""
     # String vs int
-    assert not ("hello" == AnyValue(int))
+    assert "hello" != AnyValue(int)
 
     # Int vs string
-    assert not (42 == AnyValue(str))
+    assert 42 != AnyValue(str)
 
     # Float vs int (note: isinstance(42, float) is False)
     # But isinstance(42.0, float) is True
-    assert not (42 == AnyValue(float))
+    assert 42 != AnyValue(float)
 
 
 def test_union_types():
@@ -281,30 +281,57 @@ def test_complex_scenarios():
     mock_validator.send_email.assert_called_once_with(AnyValue(str, is_valid_email))
 
 
-def test_error_messages():
-    """Test that error messages are descriptive."""
-    # Test type mismatch error
+def test_repr_and_error_messages():
+    """Test that repr() and error messages are descriptive."""
+    # Test repr without validators
     matcher = AnyValue(int)
+    repr_str = repr(matcher)
+    assert "AnyValue(int)" == repr_str
+
+    # Test repr with type mismatch error
     result = matcher == "hello"
     assert result is False
-    assert hasattr(matcher, "_last_failure_reason")
     assert "Expected type int" in matcher._last_failure_reason
     assert "str" in matcher._last_failure_reason
+    repr_str = repr(matcher)
+    assert "AnyValue(int)" in repr_str
+    assert "Reason:" in repr_str
+    assert "Expected type int" in repr_str
+
+    # Test repr with validator
+    matcher = AnyValue(int, Ge(10))
+    repr_str = repr(matcher)
+    assert "AnyValue(int" in repr_str
+    assert "Ge" in repr_str
 
     # Test validator failure error
-    matcher = AnyValue(int, Ge(10))
     result = matcher == 5
     assert result is False
     assert "Validator" in matcher._last_failure_reason
     assert "not >= 10" in matcher._last_failure_reason
+    repr_str = repr(matcher)
+    assert "Reason:" in repr_str
+
+    # Test repr with length validator
+    matcher = AnyValue(str, Len(5, 5))
+    repr_str = repr(matcher)
+    assert "AnyValue(str" in repr_str
+    assert "Len" in repr_str
 
     # Test length validator error
-    matcher = AnyValue(str, Len(5, 5))
     result = matcher == "hi"
     assert result is False
     assert "length" in matcher._last_failure_reason
+    repr_str = repr(matcher)
+    assert "Reason:" in repr_str
+    assert "length" in repr_str
 
-    # Test __ne__ works correctly
-    matcher = AnyValue(int)
-    assert matcher != "hello"
-    assert not (matcher != 42)
+    # Test repr with union type
+    matcher = AnyValue(int | str)
+    repr_str = repr(matcher)
+    assert "int | str" in repr_str
+
+    # Test repr with None type
+    matcher = AnyValue(str | None)
+    repr_str = repr(matcher)
+    assert "None" in repr_str
