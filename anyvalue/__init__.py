@@ -5,7 +5,7 @@ import typing
 
 from annotated_types import Ge, Gt, Le, Len, Lt, MultipleOf, Predicate
 
-__version__ = "0.0.0"
+__version__ = "0.1.0"
 
 T = typing.TypeVar("T")
 
