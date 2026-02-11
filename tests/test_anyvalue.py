@@ -7,7 +7,7 @@ from annotated_types import Ge, Le, Len, Predicate
 from anyvalue import AnyValue
 
 
-def test_basic_type_matching():
+def test_basic_type_matching() -> None:
     """Test basic type matching with single types."""
     # Integer matching
     assert 42 == AnyValue(int)
@@ -30,7 +30,7 @@ def test_basic_type_matching():
     assert datetime.now() == AnyValue(datetime)
 
 
-def test_type_mismatch():
+def test_type_mismatch() -> None:
     """Test that type mismatches are correctly rejected."""
     # String vs int
     assert "hello" != AnyValue(int)
@@ -43,7 +43,7 @@ def test_type_mismatch():
     assert 42 != AnyValue(float)
 
 
-def test_union_types():
+def test_union_types() -> None:
     """Test union types using the | operator."""
     # int | float
     assert 42 == AnyValue(int | float)
@@ -59,7 +59,7 @@ def test_union_types():
     assert "test" == AnyValue(int | float | str)
 
 
-def test_none_support():
+def test_none_support() -> None:
     """Test None type support."""
     # None type explicitly
     assert None == AnyValue(None)  # noqa: E711
@@ -78,7 +78,7 @@ def test_none_support():
     assert not (None == AnyValue(str))  # noqa: E711
 
 
-def test_annotated_types_ge():
+def test_annotated_types_ge() -> None:
     """Test annotated-types Ge (greater or equal) constraint."""
     # Non-negative integers
     assert 0 == AnyValue(int, Ge(0))
@@ -95,7 +95,7 @@ def test_annotated_types_ge():
     assert not (9 == AnyValue(int, Ge(10)))
 
 
-def test_annotated_types_le():
+def test_annotated_types_le() -> None:
     """Test annotated-types Le (less or equal) constraint."""
     # Values <= 100
     assert 100 == AnyValue(int, Le(100))
@@ -108,7 +108,7 @@ def test_annotated_types_le():
     assert not (200 == AnyValue(int, Le(100)))
 
 
-def test_annotated_types_len():
+def test_annotated_types_len() -> None:
     """Test annotated-types Len constraint."""
     # String length
     assert "hello" == AnyValue(str, Len(5, 5))  # Exact length 5
@@ -128,7 +128,7 @@ def test_annotated_types_len():
     assert [1, 2, 3, 4, 5] == AnyValue(list, Len(1, 10))
 
 
-def test_multiple_constraints():
+def test_multiple_constraints() -> None:
     """Test multiple constraints together."""
     # Range: 0 <= x <= 100
     assert 0 == AnyValue(int, Ge(0), Le(100))
@@ -140,7 +140,7 @@ def test_multiple_constraints():
     assert not (101 == AnyValue(int, Ge(0), Le(100)))
 
 
-def test_predicate_validator():
+def test_predicate_validator() -> None:
     """Test annotated-types Predicate validator."""
     # Custom predicate - even numbers
     is_even = Predicate(lambda x: x % 2 == 0)
@@ -166,7 +166,7 @@ def test_predicate_validator():
     assert not (43 == AnyValue(int, Ge(0), is_even))
 
 
-def test_callable_validator():
+def test_callable_validator() -> None:
     """Test custom callable validators."""
 
     # Simple callable validator
@@ -197,7 +197,7 @@ def test_callable_validator():
     assert not (-7 == AnyValue(int, Ge(0), is_prime))
 
 
-def test_mock_integration():
+def test_mock_integration() -> None:
     """Test integration with unittest.mock."""
     # Create a mock function
     mock_func = Mock()
@@ -248,7 +248,7 @@ def test_mock_integration():
     mock_func.assert_called_once_with(AnyValue(int, is_positive))
 
 
-def test_complex_scenarios():
+def test_complex_scenarios() -> None:
     """Test complex real-world scenarios."""
     # Scenario 1: API response validation
     mock_api = Mock()
@@ -281,7 +281,7 @@ def test_complex_scenarios():
     mock_validator.send_email.assert_called_once_with(AnyValue(str, is_valid_email))
 
 
-def test_repr_and_error_messages():
+def test_repr_and_error_messages() -> None:
     """Test that repr() and error messages are descriptive."""
     # Test repr without validators
     matcher = AnyValue(int)
