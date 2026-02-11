@@ -1,7 +1,9 @@
+import typing
 from datetime import datetime
 from math import isqrt
 from unittest.mock import Mock
 
+import pytest
 from annotated_types import Ge, Le, Len, Predicate
 
 from anyvalue import AnyValue
@@ -281,53 +283,75 @@ def test_complex_scenarios() -> None:
     mock_validator.send_email.assert_called_once_with(AnyValue(str, is_valid_email))
 
 
-def test_repr_and_error_messages() -> None:
-    """Test that repr() and error messages are descriptive."""
-    # Test repr without validators
-    matcher = AnyValue(int)
+@pytest.mark.parametrize(
+    "matcher,expected_repr",
+    [
+        pytest.param(
+            AnyValue(int),
+            "AnyValue(int)",
+            id="int_without_validators",
+        ),
+        pytest.param(
+            AnyValue(int, Ge(10)),
+            "AnyValue(int, Ge(ge=10))",
+            id="int_with_ge_10",
+        ),
+        pytest.param(
+            AnyValue(str, Len(5, 5)),
+            "AnyValue(str, Len(min_length=5, max_length=5))",
+            id="str_with_len_5_5",
+        ),
+        pytest.param(
+            AnyValue(int | str),
+            "AnyValue(int | str)",
+            id="int_or_str",
+        ),
+        pytest.param(
+            AnyValue(str | None),
+            "AnyValue(str | None)",
+            id="str_or_none",
+        ),
+    ],
+)
+def test_repr_exact_representation(
+    matcher: AnyValue[typing.Any], expected_repr: str
+) -> None:
+    """Test that repr() returns the exact expected representation."""
     repr_str = repr(matcher)
-    assert "AnyValue(int)" == repr_str
+    assert repr_str == expected_repr
 
-    # Test repr with type mismatch error
-    result = matcher == "hello"
+
+@pytest.mark.parametrize(
+    "matcher,test_value,expected_repr",
+    [
+        pytest.param(
+            AnyValue(int),
+            "hello",
+            "AnyValue(int)\n  Reason: Expected type int, got str ('hello')",
+            id="int_type_mismatch",
+        ),
+        pytest.param(
+            AnyValue(int, Ge(10)),
+            5,
+            "AnyValue(int, Ge(ge=10))\n  Reason: Validator Ge(ge=10) failed: 5 is not >= 10",
+            id="int_ge_validator_failure",
+        ),
+        pytest.param(
+            AnyValue(str, Len(5, 5)),
+            "hi",
+            "AnyValue(str, Len(min_length=5, max_length=5))\n  Reason: Validator Len(min_length=5, max_length=5) failed: length 2 is less than min 5",
+            id="str_len_validator_failure",
+        ),
+    ],
+)
+def test_repr_with_validation_failures(
+    matcher: AnyValue[typing.Any], test_value: object, expected_repr: str
+) -> None:
+    """Test repr() and error messages show exact expected output with reasons for validation failures."""
+    # Trigger validation failure
+    result = matcher == test_value
     assert result is False
 
+    # Check that repr matches exactly
     repr_str = repr(matcher)
-    assert "AnyValue(int)" in repr_str
-    assert "Reason:" in repr_str
-    assert "Expected type int" in repr_str
-
-    # Test repr with validator
-    matcher = AnyValue(int, Ge(10))
-    repr_str = repr(matcher)
-    assert "AnyValue(int" in repr_str
-    assert "Ge" in repr_str
-
-    # Test validator failure error
-    result = matcher == 5
-    assert result is False
-    repr_str = repr(matcher)
-    assert "Reason:" in repr_str
-
-    # Test repr with length validator
-    matcher = AnyValue(str, Len(5, 5))
-    repr_str = repr(matcher)
-    assert "AnyValue(str" in repr_str
-    assert "Len" in repr_str
-
-    # Test length validator error
-    result = matcher == "hi"
-    assert result is False
-    repr_str = repr(matcher)
-    assert "Reason:" in repr_str
-    assert "length" in repr_str
-
-    # Test repr with union type
-    matcher = AnyValue(int | str)
-    repr_str = repr(matcher)
-    assert "int | str" in repr_str
-
-    # Test repr with None type
-    matcher = AnyValue(str | None)
-    repr_str = repr(matcher)
-    assert "None" in repr_str
+    assert repr_str == expected_repr
